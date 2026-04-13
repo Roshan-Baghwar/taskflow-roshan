@@ -1,9 +1,6 @@
 package repository
 
 import (
-	"database/sql"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/Roshan-Baghwar/taskflow-roshan/backend/internal/model"
@@ -108,7 +105,7 @@ func (r *Repository) GetProjectStats(projectID uuid.UUID) (model.Stats, error) {
 	stats.ByStatus = make(map[string]int)
 	stats.ByAssignee = make(map[string]int)
 
-	// Total
+	// Total tasks
 	r.db.Get(&stats.TotalTasks, "SELECT COUNT(*) FROM tasks WHERE project_id = $1", projectID)
 
 	// By status
@@ -119,8 +116,9 @@ func (r *Repository) GetProjectStats(projectID uuid.UUID) (model.Stats, error) {
 		rows.Scan(&s, &c)
 		stats.ByStatus[s] = c
 	}
+	rows.Close()
 
-	// By assignee (simple count)
+	// By assignee
 	rows, _ = r.db.Query(`
 		SELECT COALESCE(u.name, 'Unassigned'), COUNT(*) 
 		FROM tasks t LEFT JOIN users u ON t.assignee_id = u.id 
@@ -131,5 +129,7 @@ func (r *Repository) GetProjectStats(projectID uuid.UUID) (model.Stats, error) {
 		rows.Scan(&name, &c)
 		stats.ByAssignee[name] = c
 	}
+	rows.Close()
+
 	return stats, nil
 }

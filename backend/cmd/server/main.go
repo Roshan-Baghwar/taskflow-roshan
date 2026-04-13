@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -15,6 +14,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+
 	"github.com/Roshan-Baghwar/taskflow-roshan/backend/internal/config"
 	"github.com/Roshan-Baghwar/taskflow-roshan/backend/internal/handler"
 	"github.com/Roshan-Baghwar/taskflow-roshan/backend/internal/middleware"
@@ -90,8 +90,9 @@ func main() {
 	slog.Info("Shutting down...")
 }
 
-func runMigrations(db *sql.DB) error {
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
+func runMigrations(db *sqlx.DB) error {
+	// sqlx.DB has a DB() method that returns the underlying *sql.DB
+	driver, err := postgres.WithInstance(db.DB, &postgres.Config{})
 	if err != nil {
 		return err
 	}
