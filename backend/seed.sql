@@ -4,7 +4,7 @@ VALUES
 ('d3b8f0a0-5e8e-4b0e-9f0a-8e8e8e8e8e8e', 
  'Test User', 
  'test@example.com', 
- '$2a$12$6b7b0b3e6e2a5f6d4c5b2a6d7e8f9g0h1i2j3k4l5m6n7o8p9q0r1s', 
+ '$2b$12$fFpzinSDblYp33Q6CyLAO.dOV4pn9WLX951NR.IriFYe7chK3ljpi', 
  NOW())
 ON CONFLICT (email) DO NOTHING;
 
